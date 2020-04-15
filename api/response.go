@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 var json = jsoniter.ConfigFastest
