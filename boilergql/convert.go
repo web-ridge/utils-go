@@ -1,4 +1,4 @@
-package boiler_gql
+package boilergql
 
 import (
 	"strconv"

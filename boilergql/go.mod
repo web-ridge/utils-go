@@ -1,4 +1,4 @@
-module github.com/web-ridge/utils-go/boiler_gql
+module github.com/web-ridge/utils-go/boilergql
 
 go 1.14
 
