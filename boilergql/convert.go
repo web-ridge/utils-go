@@ -245,6 +245,13 @@ func PointerFloat64ToTypesDecimal(v *float64) types.Decimal {
 	return types.NewDecimal(d)
 }
 
+func PointerFloat64ToTypesNullDecimal(v *float64) types.NullDecimal {
+	if v == nil {
+		return types.NewNullDecimal(nil)
+	}
+	return Float64ToTypesNullDecimal(*v)
+}
+
 func TypesNullDecimalToPointerString(v types.NullDecimal) *string {
 	s := v.String()
 	if s == "" {
