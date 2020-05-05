@@ -223,9 +223,9 @@ func TypesNullDecimalToFloat64(v types.NullDecimal) float64 {
 }
 
 func Float64ToTypesNullDecimal(v float64) types.NullDecimal {
-	d := new(types.Decimal)
+	d := new(decimal.Big)
 	d.SetFloat64(v)
-	return types.NewNullDecimal(d.Big)
+	return types.NewNullDecimal(d)
 }
 
 func TypesDecimalToFloat64(v types.Decimal) float64 {
