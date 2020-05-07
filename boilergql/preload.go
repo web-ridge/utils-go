@@ -40,8 +40,9 @@ func GetPreloadMods(ctx context.Context, preloadColumnMap map[string]ColumnSetti
 
 func GetPreloadModsWithLevel(ctx context.Context, preloadColumnMap map[string]ColumnSetting, level string) (queryMods []qm.QueryMod) {
 	preloads := GetPreloadsFromContext(ctx, level)
+
+	var dbPreloads []string
 	for _, preload := range preloads {
-		dbPreloads := []string{}
 		columnSetting, ok := preloadColumnMap[preload]
 		if ok {
 			if columnSetting.IDAvailable {
@@ -52,9 +53,9 @@ func GetPreloadModsWithLevel(ctx context.Context, preloadColumnMap map[string]Co
 				dbPreloads = append(dbPreloads, columnSetting.Name)
 			}
 		}
-		if len(dbPreloads) > 0 {
-			queryMods = append(queryMods, qm.Load(strings.Join(dbPreloads, ".")))
-		}
+	}
+	for _, dbPreload := range dbPreloads {
+		queryMods = append(queryMods, qm.Load(dbPreload))
 	}
 	return
 }
