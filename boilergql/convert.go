@@ -16,6 +16,10 @@ type RemovedID struct {
 	ID uint
 }
 
+type RemovedStringID struct {
+	ID string
+}
+
 func RemovedIDsToBoiler(removedIds []RemovedID) []uint {
 	uintIDs := make([]uint, len(removedIds))
 	for index, id := range removedIds {
@@ -34,6 +38,14 @@ func RemovedIDsToBoilerInt(removedIds []RemovedID) []int {
 		uintIDs[index] = int(id.ID)
 	}
 	return uintIDs
+}
+
+func RemovedIDsToBoilerString(removedIds []RemovedStringID) []string {
+	sIDs := make([]string, len(removedIds))
+	for index, id := range removedIds {
+		sIDs[index] = id.ID
+	}
+	return sIDs
 }
 
 func IntsToInterfaces(ints []int) []interface{} {
