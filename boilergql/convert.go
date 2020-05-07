@@ -7,7 +7,6 @@ import (
 
 	"github.com/ericlagergren/decimal"
 	"github.com/iancoleman/strcase"
-	"github.com/volatiletech/null"
 	"github.com/volatiletech/null/v8"
 
 	"github.com/volatiletech/sqlboiler/v4/types"
