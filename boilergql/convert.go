@@ -7,6 +7,7 @@ import (
 
 	"github.com/ericlagergren/decimal"
 	"github.com/iancoleman/strcase"
+	"github.com/volatiletech/null"
 	"github.com/volatiletech/null/v8"
 
 	"github.com/volatiletech/sqlboiler/v4/types"
@@ -401,4 +402,12 @@ func UintIsFilled(v uint) bool {
 
 func IntIsFilled(v int) bool {
 	return v != 0
+}
+
+func NullDotStringIsFilled(v null.String) bool {
+	return !v.IsZero()
+}
+
+func StringIsFilled(v string) bool {
+	return v != ""
 }
