@@ -466,21 +466,3 @@ func NullDotInt16ToPointerInt(v null.Int16) *int {
 	*val = int(v.Int16)
 	return val
 }
-
-func PgeoPointToPoint(v pgeo.Point) model.Point {
-	return model.Point{
-		Point: v,
-	}
-}
-
-func PointToPgeoPoint(v model.Point) pgeo.Point {
-	return v.Point
-}
-
-func PointerPointToPgeoPoint(v *model.Point) pgeo.Point {
-	if v == nil {
-		return pgeo.Point{}
-	}
-
-	return v.Point
-}
