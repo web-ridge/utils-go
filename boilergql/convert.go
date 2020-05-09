@@ -56,6 +56,14 @@ func IntsToInterfaces(ints []int) []interface{} {
 	return interfaces
 }
 
+func StringsToInterfaces(strings []string) []interface{} {
+	interfaces := make([]interface{}, len(strings))
+	for index, v := range strings {
+		interfaces[index] = v
+	}
+	return interfaces
+}
+
 func FloatsToInterfaces(fs []float64) []interface{} {
 	interfaces := make([]interface{}, len(fs))
 	for index, number := range fs {
