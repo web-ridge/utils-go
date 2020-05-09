@@ -418,3 +418,69 @@ func NullDotStringIsFilled(v null.String) bool {
 func StringIsFilled(v string) bool {
 	return v != ""
 }
+
+func PointerIntToTimeTime(v *int) time.Time {
+	if v == nil {
+		return time.Time{}
+	}
+
+	return time.Unix(int64(*v), 0)
+}
+
+func PointerFloat64ToNullDotFloat32(v *float64) null.Float32 {
+	val := null.Float32{}
+	if v != nil {
+		val.SetValid(float32(*v))
+	}
+
+	return val
+}
+
+func NullDotFloat32ToPointerFloat64(v null.Float32) *float64 {
+	if v.IsZero() {
+		return nil
+	}
+
+	val := new(float64)
+
+	*val = float64(v.Float32)
+	return val
+}
+
+func PointerIntToNullDotInt16(v *int) null.Int16 {
+	val := null.Int16{}
+	if v != nil {
+		val.SetValid(int16(*v))
+	}
+
+	return val
+}
+
+func NullDotInt16ToPointerInt(v null.Int16) *int {
+	if v.IsZero() {
+		return nil
+	}
+
+	val := new(int)
+
+	*val = int(v.Int16)
+	return val
+}
+
+func PgeoPointToPoint(v pgeo.Point) model.Point {
+	return model.Point{
+		Point: v,
+	}
+}
+
+func PointToPgeoPoint(v model.Point) pgeo.Point {
+	return v.Point
+}
+
+func PointerPointToPgeoPoint(v *model.Point) pgeo.Point {
+	if v == nil {
+		return pgeo.Point{}
+	}
+
+	return v.Point
+}
