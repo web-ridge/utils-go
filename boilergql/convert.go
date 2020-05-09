@@ -180,6 +180,14 @@ func NullDotStringToPointerString(v null.String) *string {
 	return v.Ptr()
 }
 
+func NullDotTimeToInt(v null.Time) int {
+	if !v.Valid {
+		return 0
+	}
+	u := int(v.Time.Unix())
+	return u
+}
+
 func NullDotTimeToPointerInt(v null.Time) *int {
 	if !v.Valid {
 		return nil
