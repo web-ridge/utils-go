@@ -8,6 +8,7 @@ import (
 	"github.com/ericlagergren/decimal"
 	"github.com/iancoleman/strcase"
 	"github.com/volatiletech/null/v8"
+	"github.com/volatiletech/sqlboiler/v4/types/pgeo"
 
 	"github.com/volatiletech/sqlboiler/v4/types"
 )
@@ -465,4 +466,23 @@ func NullDotInt16ToPointerInt(v null.Int16) *int {
 
 	*val = int(v.Int16)
 	return val
+}
+
+func PgeoPointToGeoPoint(v pgeo.Point) GeoPoint {
+	return GeoPoint{
+		X: v.X,
+		Y: v.Y,
+	}
+}
+
+func GeoPointToPgeoPoint(v GeoPoint) pgeo.Point {
+	return pgeo.NewPoint(v.X, v.Y)
+}
+
+func PointerGeoPointToPgeoPoint(v *GeoPoint) pgeo.Point {
+	if v == nil {
+		return pgeo.NewPoint(0, 0)
+	}
+
+	return pgeo.NewPoint(v.X, v.Y)
 }
