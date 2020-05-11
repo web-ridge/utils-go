@@ -200,6 +200,11 @@ func TimeTimeToInt(v time.Time) int {
 	return int(v.Unix())
 }
 
+func TimeTimeToPointerInt(v time.Time) *int {
+	u := TimeTimeToInt(v)
+	return &u
+}
+
 func IntToTimeTime(v int) time.Time {
 	return time.Unix(int64(v), 0)
 }
@@ -358,6 +363,22 @@ func IntToUint(v int) uint {
 
 func UintToInt(v uint) int {
 	return int(v)
+}
+
+func Int16ToInt(v int16) int {
+	return int(v)
+}
+
+func IntToInt16(v int) int16 {
+	return int16(v)
+}
+
+func PointerIntToInt16(v *int) int16 {
+	if v != nil {
+		return int16(*v)
+	}
+
+	return 0
 }
 
 func BoolToInt(v bool) int {
