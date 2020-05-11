@@ -66,7 +66,6 @@ func getDatabasePreloads(
 	var dbPreloads []string
 
 	for _, jsonPreload := range jsonPreloads {
-
 		// skip .id, .name, .whatever only pick root table for now
 		if strings.Count(jsonPreload, ".") > 0 {
 			continue
@@ -108,11 +107,11 @@ func getDatabasePreloads(
 }
 
 func GetPreloadsFromContext(ctx context.Context, level string) []string {
-	return uniquePreloads(StripPreloads(GetNestedPreloads(
+	return StripPreloads(GetNestedPreloads(
 		graphql.GetOperationContext(ctx),
 		graphql.CollectFieldsCtx(ctx, nil),
 		"",
-	), level))
+	), level)
 }
 
 // e.g. sometimes input is deeper and we want
@@ -123,11 +122,8 @@ func StripPreloads(preloads []string, prefix string) []string {
 	}
 	var newPreloads []string
 	for _, preload := range preloads {
-
 		if strings.HasPrefix(preload, prefix+".") {
 			newPreloads = append(newPreloads, strings.TrimPrefix(preload, prefix+"."))
-		} else if strings.HasPrefix(preload, prefix) {
-			newPreloads = append(newPreloads, strings.TrimPrefix(preload, prefix))
 		}
 	}
 	return newPreloads
@@ -137,7 +133,6 @@ func GetNestedPreloads(ctx *graphql.OperationContext, fields []graphql.Collected
 	for _, column := range fields {
 		prefixColumn := GetPreloadString(prefix, column.Name)
 		preloads = append(preloads, prefixColumn)
-		preloads = append(preloads, GetNestedPreloads(ctx, graphql.CollectFields(ctx, column.SelectionSet, nil), prefixColumn)...)
 		preloads = append(preloads, GetNestedPreloads(ctx, graphql.CollectFields(ctx, column.Selections, nil), prefixColumn)...)
 	}
 	return
@@ -148,21 +143,4 @@ func GetPreloadString(prefix, name string) string {
 		return prefix + "." + name
 	}
 	return name
-}
-
-func appendIfMissing(slice []string, i string) []string {
-	for _, ele := range slice {
-		if ele == i {
-			return slice
-		}
-	}
-	return append(slice, i)
-}
-
-func uniquePreloads(slice []string) []string {
-	var unique []string
-	for _, s := range slice {
-		unique = appendIfMissing(unique, s)
-	}
-	return unique
 }
