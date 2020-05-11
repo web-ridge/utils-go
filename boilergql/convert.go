@@ -180,6 +180,14 @@ func NullDotStringToPointerString(v null.String) *string {
 	return v.Ptr()
 }
 
+func NullDotTimeToInt(v null.Time) int {
+	if !v.Valid {
+		return 0
+	}
+	u := int(v.Time.Unix())
+	return u
+}
+
 func NullDotTimeToPointerInt(v null.Time) *int {
 	if !v.Valid {
 		return nil
@@ -190,6 +198,11 @@ func NullDotTimeToPointerInt(v null.Time) *int {
 
 func TimeTimeToInt(v time.Time) int {
 	return int(v.Unix())
+}
+
+func TimeTimeToPointerInt(v time.Time) *int {
+	u := TimeTimeToInt(v)
+	return &u
 }
 
 func IntToTimeTime(v int) time.Time {
@@ -350,6 +363,22 @@ func IntToUint(v int) uint {
 
 func UintToInt(v uint) int {
 	return int(v)
+}
+
+func Int16ToInt(v int16) int {
+	return int(v)
+}
+
+func IntToInt16(v int) int16 {
+	return int16(v)
+}
+
+func PointerIntToInt16(v *int) int16 {
+	if v != nil {
+		return int16(*v)
+	}
+
+	return 0
 }
 
 func BoolToInt(v bool) int {
