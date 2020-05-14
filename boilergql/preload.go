@@ -80,9 +80,9 @@ func getDatabasePreloads(
 				dbKey = dbPreloadKey + "." + columnSetting.Name
 			}
 
-			// if root table check if foreign key is available inside the table if so we should not load this table
-			//if the user only wanted the foreign key
-			if columnSetting.IDAvailable && nested == 0 {
+			// if root table has a foreign key available (inside the table) we don't need to preload the whole table
+			// if the user only wanted the id of that table
+			if columnSetting.IDAvailable {
 				if PreloadsContainMoreThanId(jsonPreloads, jsonPreload) {
 					dbPreloads = append(dbPreloads, dbKey)
 				}
