@@ -17,6 +17,10 @@ type RemovedID struct {
 	ID uint
 }
 
+type RemovedUint64ID struct {
+	ID uint64
+}
+
 type RemovedStringID struct {
 	ID string
 }
@@ -47,6 +51,14 @@ func RemovedIDsToBoilerString(removedIds []RemovedStringID) []string {
 		sIDs[index] = id.ID
 	}
 	return sIDs
+}
+
+func RemovedUint64IDsToBoiler(removedIds []RemovedUint64ID) []uint64 {
+	uintIDs := make([]uint64, len(removedIds))
+	for index, id := range removedIds {
+		uintIDs[index] = id.ID
+	}
+	return uintIDs
 }
 
 func IntsToInterfaces(ints []int) []interface{} {
@@ -515,3 +527,23 @@ func PointerGeoPointToPgeoPoint(v *GeoPoint) pgeo.Point {
 
 	return pgeo.NewPoint(v.X, v.Y)
 }
+
+func TimeTimeToPointerTime(v time.Time) *time.Time {
+	if v.IsZero() {
+		return nil
+	}
+
+	val := new(time.Time)
+	*val = v
+
+	return val
+}
+
+func NullDotTimeToPointerTime(v null.Time) *time.Time {
+	if !v.Valid {
+		return nil
+	}
+
+	return TimeTimeToPointerTime(v.Time)
+}
+
