@@ -547,3 +547,15 @@ func NullDotTimeToPointerTime(v null.Time) *time.Time {
 	return TimeTimeToPointerTime(v.Time)
 }
 
+func PointerTimeToNullDotTime(v *time.Time) null.Time {
+	return null.TimeFromPtr(v)
+}
+
+func PointerTimeToTimeTime(v *time.Time) time.Time {
+	if v == nil {
+		return time.Time{}
+	}
+
+	return *v
+}
+
