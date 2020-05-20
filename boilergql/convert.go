@@ -528,7 +528,7 @@ func PointerGeoPointToPgeoPoint(v *GeoPoint) pgeo.Point {
 	return pgeo.NewPoint(v.X, v.Y)
 }
 
-func TimeTimeToPointerTime(v time.Time) *time.Time {
+func TimeTimeToPointerTimeTime(v time.Time) *time.Time {
 	if v.IsZero() {
 		return nil
 	}
@@ -539,15 +539,15 @@ func TimeTimeToPointerTime(v time.Time) *time.Time {
 	return val
 }
 
-func NullDotTimeToPointerTime(v null.Time) *time.Time {
+func NullDotTimeToPointerTimeTime(v null.Time) *time.Time {
 	if !v.Valid {
 		return nil
 	}
 
-	return TimeTimeToPointerTime(v.Time)
+	return TimeTimeToPointerTimeTime(v.Time)
 }
 
-func PointerTimeToNullDotTime(v *time.Time) null.Time {
+func PointerTimeTimeToNullDotTime(v *time.Time) null.Time {
 	return null.TimeFromPtr(v)
 }
 
@@ -558,4 +558,3 @@ func PointerTimeToTimeTime(v *time.Time) time.Time {
 
 	return *v
 }
-
