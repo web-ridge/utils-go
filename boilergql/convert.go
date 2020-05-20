@@ -221,6 +221,12 @@ func IntToTimeTime(v int) time.Time {
 	return time.Unix(int64(v), 0)
 }
 
+func TimeDotTimeToPointerTimeTime(v time.Time) *time.Time {
+	ret := new(time.Time)
+	*ret = v
+	return ret
+}
+
 func NullDotStringToString(v null.String) string {
 	if !v.Valid {
 		return ""
@@ -509,18 +515,18 @@ func NullDotInt16ToPointerInt(v null.Int16) *int {
 	return val
 }
 
-func PgeoPointToGeoPoint(v pgeo.Point) GeoPoint {
+func PgeoDotPointToGeoPoint(v pgeo.Point) GeoPoint {
 	return GeoPoint{
 		X: v.X,
 		Y: v.Y,
 	}
 }
 
-func GeoPointToPgeoPoint(v GeoPoint) pgeo.Point {
+func GeoPointToPgeoDotPoint(v GeoPoint) pgeo.Point {
 	return pgeo.NewPoint(v.X, v.Y)
 }
 
-func PointerGeoPointToPgeoPoint(v *GeoPoint) pgeo.Point {
+func PointerGeoPointToPgeoDotPoint(v *GeoPoint) pgeo.Point {
 	if v == nil {
 		return pgeo.NewPoint(0, 0)
 	}
@@ -537,6 +543,13 @@ func TimeTimeToPointerTimeTime(v time.Time) *time.Time {
 	*val = v
 
 	return val
+}
+
+func PointerTimeTimeToTimeDotTime(v *time.Time) time.Time {
+	if v == nil {
+		return time.Time{}
+	}
+	return *v
 }
 
 func NullDotTimeToPointerTimeTime(v null.Time) *time.Time {
