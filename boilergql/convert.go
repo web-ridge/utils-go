@@ -261,6 +261,7 @@ func PointerBoolToNullDotBool(v *bool) null.Bool {
 }
 
 func TypesNullDecimalToFloat64(v types.NullDecimal) float64 {
+
 	if v.Big == nil {
 		return 0
 	}
@@ -305,6 +306,9 @@ func PointerFloat64ToTypesNullDecimal(v *float64) types.NullDecimal {
 }
 
 func TypesNullDecimalToPointerString(v types.NullDecimal) *string {
+	if v.Big == nil {
+		return nil
+	}
 	s := v.String()
 	if s == "" {
 		return nil
@@ -313,6 +317,9 @@ func TypesNullDecimalToPointerString(v types.NullDecimal) *string {
 }
 
 func TypesNullDecimalToPointerFloat64(v types.NullDecimal) *float64 {
+	if v.Big == nil {
+		return nil
+	}
 	s, ok := v.Float64()
 	if !ok {
 		return nil
