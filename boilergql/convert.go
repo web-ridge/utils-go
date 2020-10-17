@@ -208,26 +208,16 @@ func NullDotTimeToPointerInt(v null.Time) *int {
 	return &u
 }
 
-func TimeDotTimeToInt(v time.Time) int {
-	u := int(v.Unix())
-	return u
-}
-
 func TimeDotTimeToPointerInt(v time.Time) *int {
 	u := int(v.Unix())
 	return &u
 }
 
-func TimeTimeToInt(v time.Time) int {
+func TimeDotTimeToInt(v time.Time) int {
 	return int(v.Unix())
 }
 
-func TimeTimeToPointerInt(v time.Time) *int {
-	u := TimeTimeToInt(v)
-	return &u
-}
-
-func IntToTimeTime(v int) time.Time {
+func IntToTimeDotTime(v int) time.Time {
 	return time.Unix(int64(v), 0)
 }
 
@@ -486,7 +476,7 @@ func StringIsFilled(v string) bool {
 	return v != ""
 }
 
-func PointerIntToTimeTime(v *int) time.Time {
+func PointerIntToTimeDotTime(v *int) time.Time {
 	if v == nil {
 		return time.Time{}
 	}
@@ -553,7 +543,7 @@ func PointerGeoPointToPgeoPoint(v *GeoPoint) pgeo.Point {
 	return pgeo.NewPoint(v.X, v.Y)
 }
 
-func TimeTimeToPointerTimeTime(v time.Time) *time.Time {
+func TimeDotTimeToPointerTimeDotTime(v time.Time) *time.Time {
 	if v.IsZero() {
 		return nil
 	}
@@ -564,19 +554,19 @@ func TimeTimeToPointerTimeTime(v time.Time) *time.Time {
 	return val
 }
 
-func NullDotTimeToPointerTimeTime(v null.Time) *time.Time {
+func NullDotTimeToPointerTimeDotTime(v null.Time) *time.Time {
 	if !v.Valid {
 		return nil
 	}
 
-	return TimeTimeToPointerTimeTime(v.Time)
+	return TimeDotTimeToPointerTimeDotTime(v.Time)
 }
 
-func PointerTimeTimeToNullDotTime(v *time.Time) null.Time {
+func PointerTimeDotTimeToNullDotTime(v *time.Time) null.Time {
 	return null.TimeFromPtr(v)
 }
 
-func PointerTimeToTimeTime(v *time.Time) time.Time {
+func PointerTimeToTimeDotTime(v *time.Time) time.Time {
 	if v == nil {
 		return time.Time{}
 	}
