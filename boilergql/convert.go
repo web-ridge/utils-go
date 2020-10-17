@@ -208,6 +208,16 @@ func NullDotTimeToPointerInt(v null.Time) *int {
 	return &u
 }
 
+func TimeDotTimeToInt(v time.Time) int {
+	u := int(v.Unix())
+	return u
+}
+
+func TimeDotTimeToPointerInt(v time.Time) *int {
+	u := int(v.Unix())
+	return &u
+}
+
 func TimeTimeToInt(v time.Time) int {
 	return int(v.Unix())
 }
