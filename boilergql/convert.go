@@ -584,3 +584,18 @@ func StringToInt(v string) int {
 	i, _ := strconv.Atoi(v) //nolint:errcheck
 	return i
 }
+
+func PointerIntToString(v *int) string {
+	if v == nil {
+		return ""
+	}
+	return strconv.Itoa(*v)
+}
+
+func PointerStringToInt(v *string) int {
+	if v == nil {
+		return 0
+	}
+	i, _ := strconv.Atoi(*v) //nolint:errcheck
+	return i
+}
