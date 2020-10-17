@@ -573,6 +573,14 @@ func PointerTimeToTimeDotTime(v *time.Time) time.Time {
 	if v == nil {
 		return time.Time{}
 	}
-
 	return *v
+}
+
+func IntToString(v int) string {
+	return strconv.Itoa(v)
+}
+
+func StringToInt(v string) int {
+	i, _ := strconv.Atoi(v) //nolint:errcheck
+	return i
 }
