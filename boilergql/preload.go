@@ -15,7 +15,7 @@ type ColumnSetting struct {
 	IDAvailable           bool // ID is available without preloading
 }
 
-func PreloadsContainMoreThanId(a []string, v string) bool {
+func PreloadsContainMoreThanID(a []string, v string) bool {
 	for _, av := range a {
 		if strings.HasPrefix(av, v) &&
 			av != v && // e.g. parentTable
@@ -35,11 +35,13 @@ func PreloadsContain(a []string, v string) bool {
 	return false
 }
 
-func GetPreloadMods(ctx context.Context, preloadMap map[string]map[string]ColumnSetting, modelName string) (queryMods []qm.QueryMod) {
+func GetPreloadMods(ctx context.Context, preloadMap map[string]map[string]ColumnSetting, modelName string) (
+	queryMods []qm.QueryMod) {
 	return GetPreloadModsWithLevel(ctx, preloadMap, modelName, "")
 }
 
-func GetPreloadModsWithLevel(ctx context.Context, preloadMap map[string]map[string]ColumnSetting, modelName string, level string) (queryMods []qm.QueryMod) {
+func GetPreloadModsWithLevel(ctx context.Context, preloadMap map[string]map[string]ColumnSetting, modelName string,
+	level string) (queryMods []qm.QueryMod) {
 	jsonPreloads := GetPreloadsFromContext(ctx, level)
 	// e.g. jsonPreloads: [user.organization.id, user.friends.organization]
 	dbPreloads := getDatabasePreloads(jsonPreloads, preloadMap, modelName, 0, "")
@@ -56,7 +58,6 @@ func getDatabasePreloads(
 	nested int,
 	dbPreloadKey string,
 ) []string {
-
 	// get column settings for current model
 	columnSettings, hasColumnSettings := preloadMap[modelName]
 	if !hasColumnSettings {
@@ -73,8 +74,7 @@ func getDatabasePreloads(
 
 		// get column setting for current preload
 		columnSetting, hasColumnSetting := columnSettings[jsonPreload]
-		if hasColumnSetting {
-
+		if hasColumnSetting { //nolint:nestif
 			dbKey := columnSetting.Name
 			if dbPreloadKey != "" {
 				dbKey = dbPreloadKey + "." + columnSetting.Name
@@ -83,7 +83,7 @@ func getDatabasePreloads(
 			// if root table has a foreign key available (inside the table) we don't need to preload the whole table
 			// if the user only wanted the id of that table
 			if columnSetting.IDAvailable {
-				if PreloadsContainMoreThanId(jsonPreloads, jsonPreload) {
+				if PreloadsContainMoreThanID(jsonPreloads, jsonPreload) {
 					dbPreloads = append(dbPreloads, dbKey)
 				}
 			} else {
@@ -129,11 +129,13 @@ func StripPreloads(preloads []string, prefix string) []string {
 	return newPreloads
 }
 
-func GetNestedPreloads(ctx *graphql.OperationContext, fields []graphql.CollectedField, prefix string) (preloads []string) {
+func GetNestedPreloads(ctx *graphql.OperationContext, fields []graphql.CollectedField, prefix string) (
+	preloads []string) {
 	for _, column := range fields {
 		prefixColumn := GetPreloadString(prefix, column.Name)
 		preloads = append(preloads, prefixColumn)
-		preloads = append(preloads, GetNestedPreloads(ctx, graphql.CollectFields(ctx, column.Selections, nil), prefixColumn)...)
+		preloads = append(preloads, GetNestedPreloads(ctx,
+			graphql.CollectFields(ctx, column.Selections, nil), prefixColumn)...)
 	}
 	return
 }

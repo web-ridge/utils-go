@@ -101,8 +101,8 @@ func IDsToBoiler(ids []string) []uint {
 	return ints
 }
 
-func IDToBoiler(ID string) uint {
-	splitted := strings.Split(ID, "-")
+func IDToBoiler(id string) uint {
+	splitted := strings.Split(id, "-")
 	if len(splitted) > 1 {
 		// nolint: errcheck
 		i, _ := strconv.ParseUint(splitted[1], 10, 64)
@@ -115,12 +115,12 @@ func IDsToBoilerUint(ids []string) []uint {
 	return IDsToBoiler(ids)
 }
 
-func IDToBoilerUint(ID string) uint {
-	return IDToBoiler(ID)
+func IDToBoilerUint(id string) uint {
+	return IDToBoiler(id)
 }
 
-func IDToBoilerInt(ID string) int {
-	return int(IDToBoiler(ID))
+func IDToBoilerInt(id string) int {
+	return int(IDToBoiler(id))
 }
 
 func IDsToBoilerInt(ids []string) []int {
@@ -131,8 +131,8 @@ func IDsToBoilerInt(ids []string) []int {
 	return ints
 }
 
-func IDToNullBoiler(ID string) null.Uint {
-	uintID := IDToBoiler(ID)
+func IDToNullBoiler(id string) null.Uint {
+	uintID := IDToBoiler(id)
 	if uintID == 0 {
 		return null.NewUint(0, false)
 	}
@@ -261,7 +261,6 @@ func PointerBoolToNullDotBool(v *bool) null.Bool {
 }
 
 func TypesNullDecimalToFloat64(v types.NullDecimal) float64 {
-
 	if v.Big == nil {
 		return 0
 	}
@@ -439,7 +438,7 @@ func PointerIntToNullDotBool(v *int) null.Bool {
 		}
 	}
 	return null.Bool{
-		Valid: v != nil,
+		Valid: true,
 		Bool:  *v == 1,
 	}
 }
@@ -489,17 +488,21 @@ func PointerFloat64ToNullDotFloat32(v *float64) null.Float32 {
 	if v != nil {
 		val.SetValid(float32(*v))
 	}
-
 	return val
+}
+
+func PointerFloat64ToFloat64(v *float64) float64 {
+	if v == nil {
+		return 0
+	}
+	return *v
 }
 
 func NullDotFloat32ToPointerFloat64(v null.Float32) *float64 {
 	if v.IsZero() {
 		return nil
 	}
-
 	val := new(float64)
-
 	*val = float64(v.Float32)
 	return val
 }
