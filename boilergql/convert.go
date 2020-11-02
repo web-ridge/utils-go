@@ -13,6 +13,8 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/types"
 )
 
+const IDSeparator = "-"
+
 type RemovedID struct {
 	ID uint
 }
@@ -102,10 +104,10 @@ func IDsToBoiler(ids []string) []uint {
 }
 
 func IDToBoiler(id string) uint {
-	splitted := strings.Split(id, "-")
-	if len(splitted) > 1 {
+	splitID := strings.SplitN(id, IDSeparator, 2)
+	if len(splitID) == 2 {
 		// nolint: errcheck
-		i, _ := strconv.ParseUint(splitted[1], 10, 64)
+		i, _ := strconv.ParseUint(splitID[1], 10, 64)
 		return uint(i)
 	}
 	return 0
@@ -150,11 +152,11 @@ func NullUintToNullInt(u null.Uint) null.Int {
 }
 
 func IDToGraphQL(id uint, tableName string) string {
-	return strcase.ToLowerCamel(tableName) + "-" + strconv.Itoa(int(id))
+	return strcase.ToLowerCamel(tableName) + IDSeparator + strconv.Itoa(int(id))
 }
 
 func IntIDToGraphQL(id int, tableName string) string {
-	return strcase.ToLowerCamel(tableName) + "-" + strconv.Itoa(id)
+	return strcase.ToLowerCamel(tableName) + IDSeparator + strconv.Itoa(id)
 }
 
 func IDsToGraphQL(ids []uint, tableName string) []string {
