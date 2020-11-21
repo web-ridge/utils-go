@@ -1,10 +1,13 @@
 package boilergql
 
 import (
+	"encoding/base64"
 	"fmt"
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 type CursorType string
@@ -20,6 +23,14 @@ func GetIDFromCursor(id string) interface{} {
 		return 0
 	}
 	return splitID[1]
+}
+
+func GetModelFromCursor(id string) string {
+	splitID := strings.SplitN(id, IDSeparator, 2)
+	if len(splitID) != 2 {
+		return ""
+	}
+	return splitID[0]
 }
 
 func ZeroOrMore(limit int) int {
@@ -114,6 +125,17 @@ func GetOffsetFromCursor(cursor *string) int {
 	return i
 }
 
+func FromOffsetCursor(cursor string) []qm.QueryMod {
+	offset, _ := strconv.Atoi(cursor)
+
+	if offset > 0 {
+		return []qm.QueryMod{
+			qm.Offset(offset),
+		}
+	}
+	return nil
+}
+
 func GetDirection(direction SortDirection, reverse bool) SortDirection {
 	if reverse {
 		if direction == SortDirectionAsc {
@@ -179,12 +201,20 @@ func FromCursorValue(cursor string) (string, string) {
 	return keyValue[0], keyValue[1]
 }
 
+func StringToInterface(v string) interface{} {
+	if v == "" {
+		return nil
+	}
+	return v
+}
+
 func CursorValuesToString(v []string) string {
-	return strings.Join(v, cursorSliceSeparator)
+	return base64.StdEncoding.EncodeToString([]byte(strings.Join(v, cursorSliceSeparator)))
 }
 
 func CursorStringToValues(v string) []string {
-	return strings.Split(v, cursorSliceSeparator)
+	s, _ := base64.StdEncoding.DecodeString(v)
+	return strings.Split(string(s), cursorSliceSeparator)
 }
 
 func ToOffsetCursor(index int) string {
