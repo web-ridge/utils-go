@@ -176,6 +176,14 @@ func StringIDToGraphQL(id string, tableName string) string {
 	return strcase.ToLowerCamel(tableName) + IDSeparator + id
 }
 
+func StringIDsToGraphQL(ids []string, tableName string) []string {
+	stringIDs := make([]string, len(ids))
+	for index, id := range ids {
+		stringIDs[index] = StringIDToGraphQL(id, tableName)
+	}
+	return stringIDs
+}
+
 func IntIDToGraphQL(id int, tableName string) string {
 	return IDToGraphQL(uint(id), tableName)
 }
