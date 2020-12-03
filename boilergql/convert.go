@@ -95,6 +95,23 @@ func IDsToBoilerInterfaces(ids []string) []interface{} {
 	return interfaces
 }
 
+func StringIDsToBoilerString(ids []string) []string {
+	sa := make([]string, len(ids))
+	for index, stringID := range ids {
+		sa[index] = StringIDToBoilerString(stringID)
+	}
+	return sa
+}
+
+func StringIDToBoilerString(id string) string {
+	splitID := strings.SplitN(id, IDSeparator, 2)
+	if len(splitID) == 2 {
+		// nolint: errcheck
+		return splitID[1]
+	}
+	return ""
+}
+
 func IDsToBoiler(ids []string) []uint {
 	ints := make([]uint, len(ids))
 	for index, stringID := range ids {
@@ -155,8 +172,12 @@ func IDToGraphQL(id uint, tableName string) string {
 	return strcase.ToLowerCamel(tableName) + IDSeparator + strconv.Itoa(int(id))
 }
 
+func StringIDToGraphQL(id string, tableName string) string {
+	return strcase.ToLowerCamel(tableName) + IDSeparator + id
+}
+
 func IntIDToGraphQL(id int, tableName string) string {
-	return strcase.ToLowerCamel(tableName) + IDSeparator + strconv.Itoa(id)
+	return IDToGraphQL(uint(id), tableName)
 }
 
 func IDsToGraphQL(ids []uint, tableName string) []string {
