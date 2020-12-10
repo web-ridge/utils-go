@@ -47,6 +47,14 @@ func RemovedIDsToBoilerInt(removedIds []RemovedID) []int {
 	return uintIDs
 }
 
+func RemovedIDsToBoilerInt64(removedIds []RemovedID) []int64 {
+	intIDs := make([]int64, len(removedIds))
+	for index, id := range removedIds {
+		intIDs[index] = int64(id.ID)
+	}
+	return intIDs
+}
+
 func RemovedIDsToBoilerString(removedIds []RemovedStringID) []string {
 	sIDs := make([]string, len(removedIds))
 	for index, id := range removedIds {
@@ -106,7 +114,6 @@ func StringIDsToBoilerString(ids []string) []string {
 func StringIDToBoilerString(id string) string {
 	splitID := strings.SplitN(id, IDSeparator, 2)
 	if len(splitID) == 2 {
-		// nolint: errcheck
 		return splitID[1]
 	}
 	return ""
@@ -276,7 +283,11 @@ func PointerStringToString(v *string) string {
 }
 
 func PointerIntToNullDotTime(v *int) null.Time {
-	return null.TimeFrom(time.Unix(int64(*v), 0))
+	var unix int64
+	if v != nil {
+		unix = int64(*v)
+	}
+	return null.TimeFrom(time.Unix(unix, 0))
 }
 
 func StringToNullDotString(v string) null.String {
@@ -629,4 +640,12 @@ func PointerStringToInt(v *string) int {
 	}
 	i, _ := strconv.Atoi(*v) //nolint:errcheck
 	return i
+}
+
+func StringToByteSlice(v string) []byte {
+	return []byte(v)
+}
+
+func ByteSliceToString(v []byte) string {
+	return string(v)
 }

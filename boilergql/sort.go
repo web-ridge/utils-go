@@ -126,7 +126,7 @@ func GetOffsetFromCursor(cursor *string) int {
 }
 
 func FromOffsetCursor(cursor string) []qm.QueryMod {
-	offset, _ := strconv.Atoi(cursor)
+	offset, _ := strconv.Atoi(cursor) //nolint:errcheck
 
 	if offset > 0 {
 		return []qm.QueryMod{
@@ -147,7 +147,7 @@ func GetDirection(direction SortDirection, reverse bool) SortDirection {
 }
 
 func GetOrderBy(dbColumn string, direction SortDirection) string {
-	return dbColumn + " " + direction.String()
+	return dbColumn + " " + string(direction)
 }
 
 func CursorTypeCounter() (func(SortDirection), func() CursorType) {
@@ -169,7 +169,12 @@ func CursorTypeCounter() (func(SortDirection), func() CursorType) {
 		}
 }
 
-func HasReversePage(cursor *string, pagination ConnectionPagination, cursorType CursorType, countFunc func() (int64, error)) (bool, error) {
+func HasReversePage(
+	cursor *string,
+	pagination ConnectionPagination,
+	cursorType CursorType,
+	countFunc func() (int64, error),
+) (bool, error) {
 	if cursor != nil {
 		if cursorType == CursorTypeCursor {
 			reverseCount, err := countFunc()
@@ -177,9 +182,8 @@ func HasReversePage(cursor *string, pagination ConnectionPagination, cursorType 
 				return false, err
 			}
 			return reverseCount > 0, nil
-		} else {
-			return true, nil
 		}
+		return true, nil
 	}
 	return false, nil
 }
@@ -213,7 +217,7 @@ func CursorValuesToString(v []string) string {
 }
 
 func CursorStringToValues(v string) []string {
-	s, _ := base64.StdEncoding.DecodeString(v)
+	s, _ := base64.StdEncoding.DecodeString(v) //nolint:errcheck
 	return strings.Split(string(s), cursorSliceSeparator)
 }
 
@@ -275,5 +279,23 @@ func HasNextAndPreviousPage(pagination ConnectionPagination, hasMore bool, hasMo
 		return hasMore, hasMoreReversed
 	default:
 		return false, false
+	}
+}
+
+func NewBackwardPagination(last int, before *string) ConnectionPagination {
+	return ConnectionPagination{
+		Backward: &ConnectionBackwardPagination{
+			Last:   last,
+			Before: before,
+		},
+	}
+}
+
+func NewForwardPagination(first int, after *string) ConnectionPagination {
+	return ConnectionPagination{
+		Forward: &ConnectionForwardPagination{
+			First: first,
+			After: after,
+		},
 	}
 }
