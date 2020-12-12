@@ -649,3 +649,10 @@ func StringToByteSlice(v string) []byte {
 func ByteSliceToString(v []byte) string {
 	return string(v)
 }
+
+func PointerStringToByteSlice(v *string) []byte {
+	if v == nil {
+		return nil
+	}
+	return []byte(*v)
+}
