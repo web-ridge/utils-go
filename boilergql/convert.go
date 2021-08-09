@@ -393,6 +393,13 @@ func PointerIntToInt(v *int) int {
 	return *v
 }
 
+func PointerIntToInt8(v *int) int8 {
+	if v == nil {
+		return 0
+	}
+	return int8(*v)
+}
+
 func PointerIntToNullDotInt(v *int) null.Int {
 	return null.IntFromPtr((v))
 }
