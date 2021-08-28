@@ -256,7 +256,7 @@ func TimeDotTimeToInt(v time.Time) int {
 }
 
 func IntToTimeDotTime(v int) time.Time {
-	return time.Unix(int64(v), 0)
+	return time.Unix(int64(v), 0).UTC()
 }
 
 func NullDotStringToString(v null.String) string {
@@ -287,7 +287,7 @@ func PointerIntToNullDotTime(v *int) null.Time {
 	if v != nil {
 		unix = int64(*v)
 	}
-	return null.TimeFrom(time.Unix(unix, 0))
+	return null.TimeFrom(time.Unix(unix, 0).UTC())
 }
 
 func StringToNullDotString(v string) null.String {
@@ -529,7 +529,7 @@ func PointerIntToTimeDotTime(v *int) time.Time {
 		return time.Time{}
 	}
 
-	return time.Unix(int64(*v), 0)
+	return time.Unix(int64(*v), 0).UTC()
 }
 
 func PointerFloat64ToNullDotFloat32(v *float64) null.Float32 {
