@@ -663,3 +663,19 @@ func PointerStringToByteSlice(v *string) []byte {
 	}
 	return []byte(*v)
 }
+
+func Int64ToInt(v int64) int {
+	return int(v)
+}
+
+func NullDotUintToPointerString(v null.Uint) *string {
+	if !v.Valid {
+		return nil
+	}
+	u := string(v.Uint)
+	return &u
+}
+
+func UintToString(v uint) string {
+	return string(v)
+}
