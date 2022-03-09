@@ -672,10 +672,11 @@ func NullDotUintToPointerString(v null.Uint) *string {
 	if !v.Valid {
 		return nil
 	}
-	u := string(v.Uint)
+	u := UintToString(v.Uint)
 	return &u
 }
 
 func UintToString(v uint) string {
-	return string(v)
+	u := strconv.FormatUint(uint64(v), 10)
+	return u
 }
