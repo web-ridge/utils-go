@@ -283,11 +283,13 @@ func PointerStringToString(v *string) string {
 }
 
 func PointerIntToNullDotTime(v *int) null.Time {
-	var unix int64
-	if v != nil {
-		unix = int64(*v)
+	if v == nil {
+		return null.Time{
+			Time:  time.Time{},
+			Valid: false,
+		}
 	}
-	return null.TimeFrom(time.Unix(unix, 0))
+	return null.TimeFrom(time.Unix(int64(*v), 0))
 }
 
 func StringToNullDotString(v string) null.String {

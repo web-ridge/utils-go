@@ -1,6 +1,6 @@
 module github.com/web-ridge/utils-go/boilergql/v3
 
-go 1.14
+go 1.16
 
 require (
 	github.com/99designs/gqlgen v0.11.3
