@@ -636,6 +636,10 @@ func StringToInt(v string) int {
 	return i
 }
 
+func StringToUint(v string) uint {
+	return uint(StringToInt(v))
+}
+
 func PointerIntToString(v *int) string {
 	if v == nil {
 		return ""
