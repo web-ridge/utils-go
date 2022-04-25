@@ -655,6 +655,17 @@ func PointerStringToInt(v *string) int {
 	return i
 }
 
+func PointerStringToUint(v *string) uint {
+	return uint(PointerStringToInt(v))
+}
+
+func PointerStringToNullDotUint(v *string) null.Uint {
+	if v == nil {
+		return null.UintFromPtr(nil)
+	}
+	return null.UintFrom(PointerStringToUint(v))
+}
+
 func StringToByteSlice(v string) []byte {
 	return []byte(v)
 }
