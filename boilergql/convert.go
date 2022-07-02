@@ -697,3 +697,26 @@ func UintToString(v uint) string {
 	u := strconv.FormatUint(uint64(v), 10)
 	return u
 }
+
+func IDToBoilerUint64(v string) uint64 {
+	return uint64(IDToBoilerUint(v))
+}
+
+func Uint64ToUint(v uint64) uint {
+	return uint(v)
+}
+
+func IDsToBoilerUint64(a []string) []uint64 {
+	ids := IDsToBoilerUint(a)
+	ids2 := make([]uint64, len(ids))
+	for i, id := range ids {
+		ids2[i] = uint64(id)
+	}
+
+	return ids2
+}
+
+func NullDotInt64ToPointerInt(v null.Int64) *int {
+	intV := int(v.Int64)
+	return &intV
+}
