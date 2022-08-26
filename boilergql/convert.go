@@ -685,6 +685,18 @@ func Int64ToInt(v int64) int {
 	return int(v)
 }
 
+func IntToInt64(v int) int64 {
+	return int64(v)
+}
+
+func PointerIntToInt64(v *int) int64 {
+	if v != nil {
+		return int64(*v)
+	}
+
+	return 0
+}
+
 func NullDotUintToPointerString(v null.Uint) *string {
 	if !v.Valid {
 		return nil
