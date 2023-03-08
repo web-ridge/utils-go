@@ -720,3 +720,7 @@ func NullDotInt64ToPointerInt(v null.Int64) *int {
 	intV := int(v.Int64)
 	return &intV
 }
+
+func Uint64ToString(v uint64) string {
+	return IntToString(int(v))
+}
