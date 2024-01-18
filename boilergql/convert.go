@@ -724,3 +724,21 @@ func NullDotInt64ToPointerInt(v null.Int64) *int {
 func Uint64ToString(v uint64) string {
 	return IntToString(int(v))
 }
+
+func IntToInt64(v int) int64 {
+	return int64(v)
+}
+
+func PointerIntToInt64(v *int) int64 {
+	if v == nil {
+		return 0
+	}
+	return int64(*v)
+}
+
+func PointerIntToNullDotInt64(v *int) null.Int64 {
+	if v == nil {
+		return null.Int64FromPtr(nil)
+	}
+	return null.Int64From(int64(*v))
+}
