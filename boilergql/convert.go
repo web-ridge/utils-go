@@ -395,6 +395,13 @@ func PointerIntToInt(v *int) int {
 	return *v
 }
 
+func PointerIntToUint(v *int) uint {
+	if v == nil {
+		return 0
+	}
+	return uint(*v)
+}
+
 func PointerIntToInt8(v *int) int8 {
 	if v == nil {
 		return 0
