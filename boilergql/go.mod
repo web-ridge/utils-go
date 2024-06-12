@@ -17,7 +17,7 @@ require (
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/sosodev/duration v1.1.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.11 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.14 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/volatiletech/strmangle v0.0.6 // indirect
