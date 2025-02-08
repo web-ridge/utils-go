@@ -692,11 +692,19 @@ func Int64ToInt(v int64) int {
 	return int(v)
 }
 
-func NullDotUintToPointerString(v null.Uint) *string {
+func NullDotUintToPointerString(v null.Uint64) *string {
 	if !v.Valid {
 		return nil
 	}
 	u := UintToString(v.Uint)
+	return &u
+}
+
+func NullDotUint64ToPointerString(v null.Uint64) *string {
+	if !v.Valid {
+		return nil
+	}
+	u := Uint64ToString(v.Uint)
 	return &u
 }
 
