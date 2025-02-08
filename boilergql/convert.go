@@ -692,7 +692,7 @@ func Int64ToInt(v int64) int {
 	return int(v)
 }
 
-func NullDotUintToPointerString(v null.Uint64) *string {
+func NullDotUintToPointerString(v null.Uint) *string {
 	if !v.Valid {
 		return nil
 	}
