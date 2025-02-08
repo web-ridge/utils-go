@@ -704,7 +704,7 @@ func NullDotUint64ToPointerString(v null.Uint64) *string {
 	if !v.Valid {
 		return nil
 	}
-	u := Uint64ToString(v.Uint)
+	u := Uint64ToString(v.Uint64)
 	return &u
 }
 
