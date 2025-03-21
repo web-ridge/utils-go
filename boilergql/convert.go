@@ -557,27 +557,33 @@ func Float64ToFloat32(v float64) float32 {
 	return float32(v)
 }
 
-func PointerFloat32ToFloat64(v *float32) *float64 {
+func PointerFloat32ToFloat64(v *float32) float64 {
 	if v == nil {
-		return nil
+		return 0
 	}
 	result := float64(*v)
-	return &result
+	return result
 }
 
-func PointerFloat64ToFloat32(v *float64) *float32 {
+func PointerFloat64ToFloat32(v *float64) float32 {
 	if v == nil {
-		return nil
+		return 0
 	}
 	result := float32(*v)
-	return &result
+	return result
 }
 
 func Float32ToNullFloat64(v float32) null.Float64 {
+	if v == 0 {
+		return null.Float64{}
+	}
 	return null.Float64From(float64(v))
 }
 
 func Float64ToNullFloat32(v float64) null.Float32 {
+	if v == 0 {
+		return null.Float32{}
+	}
 	return null.Float32From(float32(v))
 }
 
