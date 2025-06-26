@@ -5,12 +5,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aarondl/null/v8"
+	"github.com/aarondl/sqlboiler/v4/types/pgeo"
 	"github.com/ericlagergren/decimal"
 	"github.com/iancoleman/strcase"
-	"github.com/volatiletech/null/v8"
-	"github.com/volatiletech/sqlboiler/v4/types/pgeo"
 
-	"github.com/volatiletech/sqlboiler/v4/types"
+	"github.com/aarondl/sqlboiler/v4/types"
 )
 
 const IDSeparator = "-"
@@ -381,7 +381,7 @@ func PointerStringToTypesNullDecimal(v *string) types.NullDecimal {
 			return nd
 		}
 		// TODO: error handling maybe write log line here
-		// https://github.com/volatiletech/sqlboiler/blob/master/types/decimal.go#L156
+		// https://github.com/aarondl/sqlboiler/blob/master/types/decimal.go#L156
 		return nd
 	}
 
