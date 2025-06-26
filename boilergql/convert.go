@@ -395,6 +395,13 @@ func PointerIntToInt(v *int) int {
 	return *v
 }
 
+func PointerIntToUint(v *int) uint {
+	if v == nil {
+		return 0
+	}
+	return uint(*v)
+}
+
 func PointerIntToInt8(v *int) int8 {
 	if v == nil {
 		return 0
@@ -540,6 +547,44 @@ func PointerFloat64ToNullDotFloat32(v *float64) null.Float32 {
 		val.SetValid(float32(*v))
 	}
 	return val
+}
+
+func Float32ToFloat64(v float32) float64 {
+	return float64(v)
+}
+
+func Float64ToFloat32(v float64) float32 {
+	return float32(v)
+}
+
+func PointerFloat32ToFloat64(v *float32) float64 {
+	if v == nil {
+		return 0
+	}
+	result := float64(*v)
+	return result
+}
+
+func PointerFloat64ToFloat32(v *float64) float32 {
+	if v == nil {
+		return 0
+	}
+	result := float32(*v)
+	return result
+}
+
+func Float32ToNullFloat64(v float32) null.Float64 {
+	if v == 0 {
+		return null.Float64{}
+	}
+	return null.Float64From(float64(v))
+}
+
+func Float64ToNullFloat32(v float64) null.Float32 {
+	if v == 0 {
+		return null.Float32{}
+	}
+	return null.Float32From(float32(v))
 }
 
 func PointerFloat64ToFloat64(v *float64) float64 {
@@ -693,6 +738,14 @@ func NullDotUintToPointerString(v null.Uint) *string {
 	return &u
 }
 
+func NullDotUint64ToPointerString(v null.Uint64) *string {
+	if !v.Valid {
+		return nil
+	}
+	u := Uint64ToString(v.Uint64)
+	return &u
+}
+
 func UintToString(v uint) string {
 	u := strconv.FormatUint(uint64(v), 10)
 	return u
@@ -723,4 +776,22 @@ func NullDotInt64ToPointerInt(v null.Int64) *int {
 
 func Uint64ToString(v uint64) string {
 	return IntToString(int(v))
+}
+
+func IntToInt64(v int) int64 {
+	return int64(v)
+}
+
+func PointerIntToInt64(v *int) int64 {
+	if v == nil {
+		return 0
+	}
+	return int64(*v)
+}
+
+func PointerIntToNullDotInt64(v *int) null.Int64 {
+	if v == nil {
+		return null.Int64FromPtr(nil)
+	}
+	return null.Int64From(int64(*v))
 }

@@ -46,7 +46,7 @@ func GetPreloadModsWithLevel(ctx context.Context, preloadMap map[string]map[stri
 	// e.g. jsonPreloads: [user.organization.id, user.friends.organization]
 	dbPreloads := getDatabasePreloads(jsonPreloads, preloadMap, modelName, 0, "")
 	for _, dbPreload := range dbPreloads {
-		queryMods = append(queryMods, qm.Load(dbPreload))
+		queryMods = append(queryMods, qm.Load(dbPreload, qm.WithDeleted()))
 	}
 	return
 }
