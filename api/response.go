@@ -1,20 +1,18 @@
 package api
 
 import (
-	"net/http"
+	"encoding/json"
 
-	jsoniter "github.com/json-iterator/go"
+	"net/http"
 )
 
-var json = jsoniter.ConfigFastest
-
-//Error a struct to return on error
+// Error a struct to return on error
 type Error struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
-//Message a struct to return on error
+// Message a struct to return on error
 type Message struct {
 	Code    int32  `json:"code"`
 	Message string `json:"message"`
