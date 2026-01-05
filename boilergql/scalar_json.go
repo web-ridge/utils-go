@@ -2,25 +2,39 @@ package boilergql
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 )
 
-type JSON map[string]interface{}
+// JSON can hold any valid JSON value (object, array, string, number, boolean, null)
+type JSON json.RawMessage
 
 func (b *JSON) UnmarshalGQL(v interface{}) error {
 	bytes, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(bytes, b)
+	*b = bytes
+	return nil
 }
 
 func (b JSON) MarshalGQL(w io.Writer) {
-	bytes, err := json.Marshal(b)
-	if err != nil {
-		fmt.Fprintf(w, `"%s"`, err.Error())
+	if len(b) == 0 {
+		_, _ = w.Write([]byte("null"))
 		return
 	}
-	_, _ = w.Write(bytes)
+	_, _ = w.Write(b)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (b *JSON) UnmarshalJSON(data []byte) error {
+	*b = append((*b)[0:0], data...)
+	return nil
+}
+
+// MarshalJSON implements json.Marshaler
+func (b JSON) MarshalJSON() ([]byte, error) {
+	if len(b) == 0 {
+		return []byte("null"), nil
+	}
+	return b, nil
 }
