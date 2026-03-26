@@ -449,6 +449,10 @@ func UintToInt(v uint) int {
 	return int(v)
 }
 
+func Uint64ToInt(v uint64) int {
+	return int(v)
+}
+
 func Int16ToInt(v int16) int {
 	return int(v)
 }
