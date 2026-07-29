@@ -195,11 +195,62 @@ const (
 	cursorSliceSeparator = "--##%$(_)$%##--"
 )
 
+// CursorTimeLayout is the layout used to write time values into pagination
+// cursors: wall-clock at second precision, the textual form SQL databases
+// compare correctly against DATETIME/TIMESTAMP columns. Override it (before
+// serving requests) if your columns need sub-second precision, e.g.
+// "2006-01-02 15:04:05.000000" for DATETIME(6).
+var CursorTimeLayout = "2006-01-02 15:04:05"
+
+// TimeSortKeyMatcher optionally marks sort keys whose cursor values are unix
+// seconds (integers) that must be compared against a wall-clock SQL column.
+// When it returns true for a key, ToCursorValue encodes integer values as
+// UTC wall-clock time using CursorTimeLayout instead of the bare number —
+// a bare integer would be string-compared against a DATETIME column and
+// match every row, so pagination would repeat the first page forever.
+//
+// It is nil by default, which disables the reinterpretation entirely:
+// integers are only ever treated as unix seconds when you opt in. Set it
+// once at application startup, e.g. when all your time columns follow the
+// created_at/updated_at naming convention:
+//
+//	boilergql.TimeSortKeyMatcher = boilergql.SuffixTimeSortKeyMatcher("_AT")
+//
+// The UTC formatting assumes the database column stores UTC wall time (the
+// go-sql-driver/mysql default without a loc parameter).
+var TimeSortKeyMatcher func(key string) bool
+
+// SuffixTimeSortKeyMatcher returns a TimeSortKeyMatcher that reports true
+// when the sort key ends in any of the given suffixes. Sort keys are the
+// uppercased enum values gqlgen generates (e.g. "CREATED_AT"), so the
+// conventional configuration is SuffixTimeSortKeyMatcher("_AT").
+func SuffixTimeSortKeyMatcher(suffixes ...string) func(key string) bool {
+	return func(key string) bool {
+		for _, suffix := range suffixes {
+			if strings.HasSuffix(key, suffix) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+// ToCursorValue encodes one sort key/value pair for a pagination cursor.
+//
+// Pointers are dereferenced first (gqlgen models nullable sort fields as
+// *int/*string; %v on a pointer would print the memory address, so the next
+// page would filter on "0xc000..." and repeat the same rows forever). A nil
+// pointer encodes as an empty value.
+//
+// time.Time values are formatted with CursorTimeLayout in their own
+// location (preserving the wall-clock reading the SQL driver produced)
+// instead of %v, whose output — monotonic clock and zone included — never
+// round-trips through FromCursorValue into a value comparable against a
+// DATETIME/TIMESTAMP column.
+//
+// Integer values are additionally interpreted as unix seconds when
+// TimeSortKeyMatcher is set and matches the key; see its documentation.
 func ToCursorValue(k string, v interface{}) string {
-	// gqlgen models nullable sort fields as pointers (*int/*string); %v on a
-	// pointer prints the memory address, so the next page filters on
-	// "0xc000..." and every page returns the same first rows. Dereference
-	// before formatting.
 	rv := reflect.ValueOf(v)
 	for rv.Kind() == reflect.Ptr {
 		if rv.IsNil() {
@@ -210,16 +261,12 @@ func ToCursorValue(k string, v interface{}) string {
 	if rv.IsValid() {
 		v = rv.Interface()
 	}
-	// Time sorts carry unix seconds in the graphql models while the SQL
-	// column is DATETIME: a bare int in the cursor gets string-compared
-	// against the column on the next page and matches everything. Time
-	// columns follow the *_at convention, so every time sort key ends in
-	// _AT: encode those as UTC wall-clock time (the mysql driver without a
-	// loc parameter reads DATETIME wall time as UTC, so UTC formatting
-	// returns exactly the column value).
-	if strings.HasSuffix(k, "_AT") {
+	if t, ok := v.(time.Time); ok {
+		return k + cursorValueSeparator + t.Format(CursorTimeLayout)
+	}
+	if TimeSortKeyMatcher != nil && TimeSortKeyMatcher(k) {
 		if unix, ok := asUnixSeconds(v); ok {
-			return k + cursorValueSeparator + time.Unix(unix, 0).UTC().Format("2006-01-02 15:04:05")
+			return k + cursorValueSeparator + time.Unix(unix, 0).UTC().Format(CursorTimeLayout)
 		}
 	}
 	return k + cursorValueSeparator + fmt.Sprintf("%v", v)
