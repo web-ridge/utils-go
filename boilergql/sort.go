@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/aarondl/sqlboiler/v4/queries/qm"
 )
@@ -194,7 +196,44 @@ const (
 )
 
 func ToCursorValue(k string, v interface{}) string {
+	// gqlgen models nullable sort fields as pointers (*int/*string); %v on a
+	// pointer prints the memory address, so the next page filters on
+	// "0xc000..." and every page returns the same first rows. Dereference
+	// before formatting.
+	rv := reflect.ValueOf(v)
+	for rv.Kind() == reflect.Ptr {
+		if rv.IsNil() {
+			return k + cursorValueSeparator
+		}
+		rv = rv.Elem()
+	}
+	if rv.IsValid() {
+		v = rv.Interface()
+	}
+	// Time sorts carry unix seconds in the graphql models while the SQL
+	// column is DATETIME: a bare int in the cursor gets string-compared
+	// against the column on the next page and matches everything. Time
+	// columns follow the *_at convention, so every time sort key ends in
+	// _AT: encode those as UTC wall-clock time (the mysql driver without a
+	// loc parameter reads DATETIME wall time as UTC, so UTC formatting
+	// returns exactly the column value).
+	if strings.HasSuffix(k, "_AT") {
+		if unix, ok := asUnixSeconds(v); ok {
+			return k + cursorValueSeparator + time.Unix(unix, 0).UTC().Format("2006-01-02 15:04:05")
+		}
+	}
 	return k + cursorValueSeparator + fmt.Sprintf("%v", v)
+}
+
+func asUnixSeconds(v interface{}) (int64, bool) {
+	rv := reflect.ValueOf(v)
+	switch rv.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return rv.Int(), true
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return int64(rv.Uint()), true
+	}
+	return 0, false
 }
 
 func FromCursorValue(cursor string) (string, string) {
