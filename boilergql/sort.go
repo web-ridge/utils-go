@@ -7,8 +7,10 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/aarondl/null/v8"
 	"github.com/aarondl/sqlboiler/v4/queries/qm"
 )
 
@@ -296,6 +298,69 @@ func StringToInterface(v string) interface{} {
 		return nil
 	}
 	return v
+}
+
+// CursorValueForColumn decodes one cursor value for the database column it
+// will be compared against, using the sqlboiler model to learn that column's
+// Go type from its boil struct tags.
+//
+// GraphQL models expose time columns as unix seconds, which SQL databases
+// refuse to compare against a DATE/DATETIME/TIMESTAMP column: the keyset
+// WHERE matches nothing and the page after the first one comes back empty.
+// For a time column the value is therefore bound as a time.Time again, and
+// values that carry no comparable time at all (a null column, whose cursor
+// value is empty) drop out of the keyset instead of entering it as a string.
+//
+// Values already written in CursorTimeLayout (see ToCursorValue) are passed
+// through unchanged; they are the wall-clock text the column compares
+// against, and reparsing them would move them into another location.
+//
+// Callers without a sqlboiler model can keep using StringToInterface, which
+// is what this falls back to for every non-time column.
+func CursorValueForColumn(model interface{}, column string, value string) interface{} {
+	if value == "" || !isTimeColumn(model, column) {
+		return StringToInterface(value)
+	}
+	if seconds, err := strconv.ParseInt(value, 10, 64); err == nil {
+		return time.Unix(seconds, 0)
+	}
+	if _, err := time.Parse(CursorTimeLayout, value); err == nil {
+		return value
+	}
+	return nil
+}
+
+var timeColumnsByModel sync.Map
+
+func isTimeColumn(model interface{}, column string) bool {
+	modelType := reflect.TypeOf(model)
+	if modelType == nil || modelType.Kind() != reflect.Struct {
+		return false
+	}
+
+	cached, ok := timeColumnsByModel.Load(modelType)
+	if !ok {
+		columns := make(map[string]bool, modelType.NumField())
+		for i := 0; i < modelType.NumField(); i++ {
+			field := modelType.Field(i)
+			name := field.Tag.Get("boil")
+			if name == "" || name == "-" {
+				continue
+			}
+			columns[name] = isTimeType(field.Type)
+		}
+		timeColumnsByModel.Store(modelType, columns)
+		cached = columns
+	}
+
+	return cached.(map[string]bool)[column]
+}
+
+func isTimeType(fieldType reflect.Type) bool {
+	if fieldType.Kind() == reflect.Ptr {
+		fieldType = fieldType.Elem()
+	}
+	return fieldType == reflect.TypeOf(time.Time{}) || fieldType == reflect.TypeOf(null.Time{})
 }
 
 func CursorValuesToString(v []string) string {
